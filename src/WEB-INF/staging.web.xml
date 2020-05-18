@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+    http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+    <display-name>Prices Paid Portal Analytics Web Application</display-name>
+    <session-config>
+        <session-timeout>20</session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    <servlet>
+        <servlet-name>initServlet</servlet-name>
+        <servlet-class>p3.InitializeServlet</servlet-class>
+        <init-param>
+            <param-name>ldapAuth</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ldapHost</param-name>
+            <param-value>ldap://ecoh3s-dc01.ent.ds.gsa.gov:389</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ldapBindUserId</param-name>
+            <param-value>CN=FCOH1B-Pass_Test_User,OU=SAUsers,OU=Admins,DC=ent,DC=ds,DC=gsa,DC=gov</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ldapBindPassword</param-name>
+            <param-value>P@ssword1234!</param-value>
+        </init-param>
+        <init-param>
+            <param-name>zipfileuploadlocation</param-name>
+            <param-value>/web/tmp_file_upload/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ombmaxlink</param-name>
+            <!--
+ <param-value>login-p3.jsp</param-value> 
+            -->
+            <param-value>https://login.max.gov/cas/login?service=https://p3-staging.cap.gsa.gov/gui/ReturnLoginViaMax</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ombmaxredirectlink</param-name>
+            <!--
+ <param-value>login-p3.jsp</param-value> 
+            -->
+            <param-value>https://p3-staging.cap.gsa.gov/gui/ReturnLoginViaMax</param-value>
+        </init-param>
+        <init-param>
+            <param-name>restservername</param-name>
+            <!--
+ <param-value>login-p3.jsp</param-value> 
+            -->
+            <param-value>http://10.174.17.130:8764/api/apollo/query-pipelines/p3-search-pipeline/collections/</param-value>
+        </init-param>
+	<init-param>
+            <param-name>restservername2</param-name>
+            <!--
+ <param-value>login-p3.jsp</param-value>
+            -->
+            <param-value>http://10.174.17.118:8764/api/apollo/query-pipelines/p3-search-pipeline/collections/</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>fileuploadserviceurl</param-name>
+            <!--
+ <param-value>login-p3.jsp</param-value> 
+            -->
+            <param-value>https://soa-ext.fas.gsa.gov:443/nde/RESTFileAttachmentService/P3FileIngestAPIREST/RESTFileIngestAPI/UploadService</param-value>
+        </init-param>
+        <init-param>
+            <param-name>fileuploadauthurl</param-name>
+            <!--
+ <param-value>login-p3.jsp</param-value> 
+            -->
+            <param-value>https://soa-ext.fas.gsa.gov:443/nde/SOAPMAuthenticationService/P3FileIngestAPIREST/RESTFileIngestAPI/CheckUserService</param-value>
+        </init-param>
+        <init-param>
+            <param-name>dashboardLocation</param-name>
+            <!--
+ <param-value>login-p3.jsp</param-value> 
+            -->
+            <param-value>banana/index.html#/dashboard/file/p3.json</param-value>
+        </init-param>
+        <init-param>
+            <param-name>primarySOLRServer</param-name>
+            <!--
+ <param-value>http://96.127.49.17:8764/api/apollo/query-pipelines/p3-search-pipeline/collections/</param-value> 
+            -->
+            <param-value>http://10.174.17.130:8983</param-value>
+        </init-param>
+        <init-param>
+            <param-name>secondarySOLRServer</param-name>
+            <param-value>http://10.174.17.118:8983</param-value>
+        </init-param>
+        <init-param>
+            <param-name>solrCredentials</param-name>
+            <param-value>p3user:12nbUNi3OLKjkij</param-value>
+        </init-param>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+    <filter>
+        <filter-name>AccessCheckFilter</filter-name>
+        <filter-class>p3.AccessCheckFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AccessCheckFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>ClickjackFilterDeny</filter-name>
+        <filter-class>org.owasp.filters.ClickjackFilter</filter-class>
+        <init-param>
+            <param-name>mode</param-name>
+            <param-value>DENY</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>ClickjackFilterDeny</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- ************************* -->
+    <!-- Sign out not yet implemented -->
+    <!--
+ <filter-mapping> <filter-name>CAS Single Sign Out Filter</filter-name> 
+        <url-pattern>/*</url-pattern> </filter-mapping>
+    -->
+    <filter>
+        <filter-name>CAS Authentication Filter</filter-name>
+        <filter-class>org.jasig.cas.client.authentication.Saml11AuthenticationFilter</filter-class>
+        <init-param>
+            <param-name>casServerLoginUrl</param-name>
+            <param-value>https://login.max.gov/cas/login</param-value>
+        </init-param>
+        <init-param>
+            <param-name>service</param-name>
+            <param-value>https://p3-staging.cap.gsa.gov/gui/ReturnLoginViaMax</param-value>
+        </init-param>
+        <init-param>
+            <param-name>gateway</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+    <filter>
+        <filter-name>CAS Validation Filter</filter-name>
+        <filter-class>org.jasig.cas.client.validation.Saml11TicketValidationFilter</filter-class>
+        <init-param>
+            <param-name>casServerUrlPrefix</param-name>
+            <param-value>https://login.max.gov/cas/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>service</param-name>
+            <param-value>https://p3-staging.cap.gsa.gov/gui/ReturnLoginViaMax</param-value>
+            <!--
+ <param-name>serverName</param-name> <param-value>https://www.ebuy.gsa.gov</param-value> 
+                <param-value>https://localhost:8080</param-value>
+            -->
+        </init-param>
+        <init-param>
+            <param-name>artifactParameterName</param-name>
+            <param-value>SAMLArt</param-value>
+        </init-param>
+        <!--
+ <init-param> <param-name>proxyCallbackUrl</param-name> <param-value>https://ebuy-test.fas.gsa.gov/ebuyopen/proxyCallback</param-value> 
+            </init-param> <init-param> <param-name>proxyReceptorUrl</param-name> <param-value>/ebuyopen/proxyCallback</param-value>
+            </init-param>
+        -->
+    </filter>
+    <filter>
+        <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+        <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>CAS Assertion Thread Local Filter</filter-name>
+        <filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class>
+    </filter>
+    <!--
+ <filter-mapping> <filter-name>CAS Authentication Filter</filter-name> 
+        <url-pattern>/banana/*</url-pattern>
+
+<url-pattern>/solr/*</url-pattern> </filter-mapping>
+        <filter-mapping> <filter-name>CAS Validation
+
+Filter</filter-name> <url-pattern>/*</url-pattern>
+        </filter-mapping> <filter-mapping> <filter-name>CAS
+
+HttpServletRequest Wrapper
+        Filter</filter-name> <url-pattern>/*</url-pattern> </filter-mapping> <filter-mapping>
+
+
+        <filter-name>CAS Assertion Thread Local Filter</filter-name> <url-pattern>/*</url-pattern>
+        </filter-mapping>
+
+<filter-mapping> <filter-name>CAS Validation Filter</filter-name>
+        <url-pattern>/proxyCallback</url-pattern>
+
+</filter-mapping>
+    -->
+    <!--
+ <filter> <filter-name>CasLogFilter</filter-name> <filter-class>ebuy.CasLogFilter</filter-class> 
+        </filter> <filter-mapping> <filter-name>CasLogFilter</filter-name> <url-pattern>/</url-pattern>
+        <url-pattern>/banana/*</url-pattern> <url-pattern>/solr/*</url-pattern> </filter-mapping>
+    -->
+    <servlet>
+        <description/>
+        <display-name>ProxyServlet</display-name>
+        <servlet-name>ProxyServlet</servlet-name>
+        <servlet-class>proxy.ProxyServlet</servlet-class>
+        <!--
+ <init-param> <param-name>allowedRequestPattern1</param-name> <param-value>/solr/admin/cores\?action=STATUS&amp;wt=json&amp;omitHeader=true</param-value> 
+            </init-param> <init-param> <param-name>allowedRequestPattern2</param-name>
+            <param-value>/solr/p3coll/admin/luke\?numTerms=0&amp;wt=json</param-value>
+            </init-param>
+        -->
+        <init-param>
+            <param-name>allowedRequestPattern3</param-name>
+            <param-value>solr/p3-G/select.*</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProxyServlet</servlet-name>
+        <url-pattern>/solr/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <description/>
+        <display-name>AttachmentServlet</display-name>
+        <servlet-name>AttachmentServlet</servlet-name>
+        <servlet-class>p3.AttachmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AttachmentServlet</servlet-name>
+        <url-pattern>/banana/download/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CasRedirectServlet</servlet-name>
+        <servlet-class>p3.CasRedirectServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CasRedirectServlet</servlet-name>
+        <url-pattern>/ReturnLoginViaMax</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SolutionFinder</servlet-name>
+        <servlet-class>p3.SolutionFinderService</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SolutionFinder</servlet-name>
+        <url-pattern>/solutionfinder</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>p3.Logout</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/Logout</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CheckSession</servlet-name>
+        <servlet-class>p3.CheckSession</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckSession</servlet-name>
+        <url-pattern>/CheckSession</url-pattern>
+    </servlet-mapping>
+    <listener>
+        <listener-class>listener.SessionListener</listener-class>
+    </listener>
+    <!--
+ <servlet-mapping> <servlet-name>Jersey Web Application</servlet-name> 
+        <url-pattern>/api/*</url-pattern> </servlet-mapping>
+    -->
+</web-app>

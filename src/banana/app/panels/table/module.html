@@ -1,0 +1,141 @@
+<div ng-controller='table' ng-init='init()' xmlns="http://www.w3.org/1999/html">
+    <style>
+        .table-doc-table {
+            margin-left: 0px !important;
+            overflow-y: auto;
+            overflow-x: scroll;
+            height: 400px;
+        }
+    </style>
+
+
+    <div class="row-fluid">
+        <div ng-class="{'span3':panel.field_list}" ng-show="panel.field_list">
+            <div class="sidebar-nav">
+                <h5>Fields <i class=" icon-chevron-sign-left pointer " ng-click="panel.field_list = !panel.field_list" bs-tooltip="'Hide field list'" ng-show="panel.field_list"></i></h5>
+                <ul class="unstyled" style="{{panel.overflow}}:{{panel.height || row.height}};overflow-y:auto;overflow-x:auto;">
+                    <li ng-style="panel.style" ng-repeat="field in fields.list" ng-show="_.isUndefined(panel.important_fields) || _.contains(panel.important_fields,field)">
+                        <i class="pointer" ng-class="{'icon-check': _.contains(panel.fields,field),'icon-check-empty': !_.contains(panel.fields,field)}" ng-click="toggle_field(field)"></i>
+                        <a class="pointer" data-unique="1" bs-popover="'app/panels/table/micropanel.html'" data-placement="right" ng-click="toggle_micropanel(field,true)" ng-class="{label: _.contains(panel.fields,field)}">{{field}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row-fluid" ng-show="panel.paging">
+            <div class="span11 offset1" style="text-align:center">
+                <i ng-click="panel.offset = 0 ; panel.pageno = 0" ng-show="panel.offset &gt; 0" class="icon-circle-arrow-left pointer" style="display: none;"></i>
+                <i ng-click="panel.offset = (panel.offset - panel.size)  ; panel.pageno = panel.pageno -1" ng-show="panel.offset &gt; 0" class="icon-arrow-left pointer" style="display: none;">&nbsp;Back&nbsp;</i>
+                Page
+                <strong class="ng-binding">{{panel.pageno + 1}}</strong> of <strong class="ng-binding">{{dashboard.ceilValue(data.length/panel.size)}}</strong>
+                (Total <strong class="ng-binding">{{dashboard.numberWithCommas(hits)}} </strong> data records) &nbsp; Next &nbsp;<i ng-click="panel.offset = (panel.offset + panel.size) ; panel.pageno = panel.pageno + 1" ng-show="data.length &gt; panel.offset+panel.size" class="icon-arrow-right pointer"></i>
+            </div>
+
+        </div>
+        <div style="{{panel.overflow}}:{{panel.height || row.height}};" ng-class="{'span9':panel.field_list,'span12':!panel.field_list}" class="table-doc-table">
+
+
+            <table class="table-hover table table-condensed header-fixed" ng-style="panel.style" >
+
+                <!-- p3#changes - Table caption -->
+                <caption class="sr-only" ng-show="panel.title">{{panel.title}}</caption>
+                <thead ng-show="panel.header">
+                <th ng-show="panel.fields.length<1">message (select columns from the list to the left)</th>
+                <th style="white-space:nowrap" ng-repeat="field in panel.fields">
+                    <i ng-show="!$first" class="pointer link icon-caret-left" ng-click="_.move(panel.fields,$index,$index-1)"></i>
+            <span  class="pointer" ng-click="set_sort(field)" ng-show='panel.sortable' ng-switch="field">
+	              <span ng-switch-when="DATE">ORDER DATE</span>
+	              <span ng-switch-default> {{field.split("_").join(" ")}}</span>
+                   <i ng-show='field == panel.sort[0]' class="pointer link" ng-class="{'icon-chevron-up': panel.sort[1] == 'asc','icon-chevron-down': panel.sort[1] == 'desc'}"></i>
+            </span>
+            <span ng-show='!panel.sortable' ng-switch="field" >
+             	 <span ng-switch-when="DATE">ORDER DATE</span>
+	              <span ng-switch-default> {{field.split("_").join(" ")}}</span>
+	         </span>
+                    <i ng-show="!$last" class="pointer link icon-caret-right" ng-click="_.move(panel.fields,$index,$index+1)"></i>
+                </th>
+                <!-- Hyperlink column header -->
+
+                <th ng-show="panel.enableHyperlink" style="white-space:nowrap">{{panel.hyperlinkColumnHeader}}</th>
+                </thead>
+
+                <tbody ng-repeat="event in data | slice:panel.offset:panel.offset+panel.size" ng-class-odd="'odd'">
+                <tr ng-click="toggle_details(event)" class="pointer">
+                    <td ng-show="panel.fields.length<1">{{event.kibana._source|stringify|tableTruncate:panel.trimFactor:1}}</td>
+
+                    <!-- Table columns -->
+                    <td ng-show="panel.fields.length>0" ng-repeat="field in panel.fields"  ng-switch="field" >
+                        <span style="display: block;text-align: right;" ng-switch-when="TOTAL_PRICE" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight|currency"></span>
+                        <span style="display: block;text-align: right;" ng-switch-when="PRICE_PER_UNIT" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight|currency"></span>
+                        <span ng-switch-when="DATE" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field])|date:'MM-dd-yyyy' |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></span>
+                        <span ng-switch-when="UPC" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field])|number: 20 |removeCommas |tableHighlight | nanFilter | tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></span>
+                        <span ng-switch-when="MANUFACTURER_PART_NUMBER" ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field])|mfrNumber |tableHighlight | tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight"></span>
+                        <span ng-switch-default ng-bind-html-unsafe="(event.kibana.highlight[field]||event.kibana._source[field]) |tableHighlight |tableTruncate:panel.trimFactor:panel.fields.length:field:panel.imageFields |tableDisplayImageField:field:panel.imageFields:panel.imgFieldWidth:panel.imgFieldHeight|expandAcronym"></span>
+                    </td>
+
+                    <!-- Hyperlink column -->
+                    <td ng-click="" ng-show="panel.enableHyperlink && panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLinkAsIcon"></td>
+                    <td ng-show="panel.enableHyperlink && !panel.displayLinkIcon" ng-bind-html-unsafe="event.kibana._source[panel.hyperlinkColumnForURI] |urlLink"></td>
+                    <!-- end Hyperlink column -->
+                </tr>
+
+                <tr ng-show="event.kibana.details">
+                    <td colspan={{panel.fields.length}} ng-switch="event.kibana.view">
+              <span>
+                View:
+                <a class="link" ng-class="{'strong':event.kibana.view == 'table'}" ng-click="event.kibana.view = 'table'">Table</a> /
+                <a class="link" ng-class="{'strong':event.kibana.view == 'json'}" ng-click="event.kibana.view = 'json'">JSON</a> /
+                <a class="link" ng-class="{'strong':event.kibana.view == 'raw'}" ng-click="event.kibana.view = 'raw'">Raw</a>
+                <i class="link pull-right icon-chevron-up" ng-click="toggle_details(event)"></i>
+              </span>
+                        <table class='table table-bordered table-condensed' ng-switch-when="table">
+                            <thead>
+                            <th width="200">Field</th>
+                            <th width="60">Action</th>
+                            <th>Value</th>
+                            </thead>
+                            <tr ng-repeat="(key,value) in event.kibana._source" ng-show ="filterFunction(key)" ng-class-odd="'odd'">
+
+                                <td ng-switch="key"><span ng-switch-when="DATE"> ORDER DATE</span>
+                                    <span ng-switch-default>{{ key.split("_").join(" ")}} </span>
+                                </td>
+                                <td style="white-space:nowrap">
+                                    <i title="search" class='icon-search pointer' ng-click="build_search(key,value)" bs-tooltip="'Add filter to match this value'"></i>
+                                    <i title="ban-circle" class='icon-ban-circle pointer' ng-click="build_search(key,value,true)" bs-tooltip="'Add filter to NOT match this value'"></i>
+                                    <i class="pointer icon-th" ng-click="toggle_field(key)" bs-tooltip="'Toggle table column'"></i>
+                                </td>
+                                <!-- At some point we need to create a more efficient way of applying the filter pipeline -->
+
+                                <td ng-switch="key">
+                                    <span ng-switch-when="TOTAL_PRICE" ng-bind-html-unsafe="value|noXml|urlLink|currency"></span>
+                                    <span ng-switch-when="PRICE_PER_UNIT" ng-bind-html-unsafe="value|noXml|urlLink|currency"></span>
+                                    <span ng-switch-when="DATE" ng-bind-html-unsafe="value|noXml|urlLink|date:'MM-dd-yyyy'"></span>
+                                    <span ng-switch-default ng-bind-html-unsafe="value|noXml|urlLink|stringify"></span>
+                                    <span ng-switch-when="AIR_BILL_NUMBER" ng-hide="AIR_BILL_NUMBER" class="ng-hide"></span>
+                                    <span ng-switch-when="PICKUP_DATE_SK" ng-hide="PICKUP_DATE_SK" class="ng-hide"></span>
+                                    <span ng-switch-when="CONTENT_DESCRIPTION" ng-hide="CONTENT_DESCRIPTION" class="ng-hide"></span>
+                                    <span ng-switch-when="ACTUAL_WEIGHT_UNIT" ng-hide="ACTUAL_WEIGHT_UNIT" class="ng-hide"></span>
+                                    <span ng-switch-when="NUM_OF_PIECES_IN_SHIPMENT" ng-hide="NUM_OF_PIECES_IN_SHIPMENT" class="ng-hide"></span>
+                                    <span ng-switch-when="SHIPMENT_COST" ng-hide="SHIPMENT_COST" class="ng-hide"></span>
+                                </td>
+
+                            </tr>
+                        </table>
+                        <pre style="white-space:pre-wrap"  ng-bind-html="without_kibana(event)|tableJson:2" ng-switch-when="json"></pre>
+                        <pre ng-bind-html="without_kibana(event)|tableJson:1" ng-switch-when="raw"></pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row-fluid" ng-show="panel.paging">
+            <div class="span11 offset1" style="text-align:center">
+                <i ng-click="panel.offset = 0 ; panel.pageno = 0" ng-show="panel.offset &gt; 0" class="icon-circle-arrow-left pointer" style="display: none;"></i>
+                <i ng-click="panel.offset = (panel.offset - panel.size)  ; panel.pageno = panel.pageno -1" ng-show="panel.offset &gt; 0" class="icon-arrow-left pointer" style="display: none;">&nbsp;Back&nbsp;</i>
+                Page
+                <strong class="ng-binding">{{panel.pageno + 1}}</strong> of <strong class="ng-binding">{{dashboard.ceilValue(data.length/panel.size)}}</strong>
+                (Total <strong class="ng-binding">{{dashboard.numberWithCommas(hits)}} </strong> data records) &nbsp; Next &nbsp;<i ng-click="panel.offset = (panel.offset + panel.size) ; panel.pageno = panel.pageno + 1" ng-show="data.length &gt; panel.offset+panel.size" class="icon-arrow-right pointer"></i>
+            </div>
+
+        </div>
+    </div>
+</div>

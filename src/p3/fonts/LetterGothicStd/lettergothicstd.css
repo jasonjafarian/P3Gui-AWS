@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'LetterGothicStdRegular';
+    src: url('lettergothicstd.eot');
+    src: url('lettergothicstd.eot') format('embedded-opentype'),
+         url('lettergothicstd.woff2') format('woff2'),
+         url('lettergothicstd.woff') format('woff'),
+         url('lettergothicstd.ttf') format('truetype'),
+         url('lettergothicstd.svg#LetterGothicStdRegular') format('svg');
+}

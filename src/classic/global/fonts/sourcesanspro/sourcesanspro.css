@@ -1,0 +1,15 @@
+@charset "UTF-8";
+/* CSS Document */
+@font-face {
+	font-family:'SourceSansPro';
+	src: url('MyriadPro-Bold_gdi.eot');
+	src: url('MyriadPro-Bold_gdi.eot?#iefix') format('embedded-opentype'),
+		url('MyriadPro-Bold_gdi.woff') format('woff'),
+		url('MyriadPro-Bold_gdi.ttf') format('truetype'),
+		url('MyriadPro-Bold_gdi.svg#MyriadPro-Bold') format('svg');
+	font-weight: 700;
+	font-style: normal;
+	font-stretch: normal;
+	unicode-range: U+0020-25CA;
+}
+

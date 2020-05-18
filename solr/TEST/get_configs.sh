@@ -1,0 +1,11 @@
+rsync -av solr@solr01t:/apps/solr/ebuyopen/solr/ebuyopen '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica1/'
+rsync -av solr@solr01t:/apps/solr/ebuyopen/solr/feedback '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica1/'
+rsync -av --exclude='lib' solr@solr01t:/apps/solr/ebuyopen/solr-webapp/webapp/WEB-INF '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica1/jetty/'
+rsync -av solr@solr01t:/apps/solr/ebuyopen/etc '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica1/jetty/'
+rsync -av solr@solr01t:/apps/solr/ebuyopen/resources/log4j.properties '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica1/resources/'
+
+rsync -av solr@solr02t:/apps/solr/ebuyopen/solr/ebuyopen '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica2/'
+rsync -av solr@solr02t:/apps/solr/ebuyopen/solr/feedback '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica2/'
+rsync -av --exclude='lib' solr@solr02t:/apps/solr/ebuyopen/solr-webapp/webapp/WEB-INF '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica2/jetty/'
+rsync -av solr@solr02t:/apps/solr/ebuyopen/etc '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica2/jetty/'
+rsync -av solr@solr02t:/apps/solr/ebuyopen/resources/log4j.properties '/cygdrive/c/Users/NikitaVasilyev/Documents/Data/EBuy Open/Code/SVN/solr/TEST/replica2/resources/'

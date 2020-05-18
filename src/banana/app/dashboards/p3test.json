@@ -1,0 +1,276 @@
+{
+"title": "p3test",
+  "services": {
+    "query": {
+      "idQueue": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "list": {
+        "0": {
+          "query": "*:*",
+          "alias": "",
+          "color": "#7EB26D",
+          "id": 0,
+          "pin": false,
+          "type": "lucene"
+        }
+      },
+      "ids": [
+        0
+      ]
+    },
+    "filter": {
+      "idQueue": [
+        1,
+        2
+      ],
+      "list": {
+        "0": {
+          "type": "querystring",
+          "query": "",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Query and Time Window",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 3,
+          "editable": true,
+          "type": "hits",
+          "loadingEditor": false,
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&fq=&wt=json&rows=0\n",
+            "basic_query": "",
+            "custom": ""
+          },
+          "style": {
+            "font-size": "14pt"
+          },
+          "arrangement": "horizontal",
+          "chart": "total",
+          "counter_pos": "above",
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "spyable": true,
+          "title": "Total Hits",
+          "show_queries": true
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "group": [
+            "default"
+          ],
+          "type": "query",
+          "label": "Search",
+          "history": [
+            "*:*",
+            "PROPPER",
+            "98314",
+            "GSA",
+            "NAVAL",
+            "shild",
+            "CLAUSING",
+            "HSM"
+          ],
+          "remember": 10,
+          "pinned": true,
+          "query": "*:*",
+          "title": "Search",
+          "spyable": true,
+          "def_type": ""
+        }
+      ]
+    },
+    {
+      "title": "Filters",
+      "height": "50px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "spyable": true,
+          "group": [
+            "default"
+          ],
+          "type": "filtering"
+        }
+      ]
+    },
+    {
+      "title": "Graph",
+      "height": "250px",
+      "editable": true,
+      "collapse": true,
+      "collapsable": true,
+      "panels": []
+    },
+    {
+      "title": "Table",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 12,
+          "editable": true,
+          "type": "table",
+          "loadingEditor": false,
+          "status": "Stable",
+          "queries": {
+            "mode": "all",
+            "ids": [
+              0
+            ],
+            "query": "q=*%3A*&fq=&wt=json&rows=500",
+            "basic_query": "q=*%3A*&fq=",
+            "custom": ""
+          },
+          "size": 100,
+          "pages": 5,
+          "offset": 300,
+          "sort": [],
+          "group": "default",
+          "style": {
+            "font-size": "9pt"
+          },
+          "overflow": "min-height",
+          "fields": [
+            "Bureau_t",
+            "Contract Number_t",
+            "Duns Number_t",
+            "From Zip Code_t",
+            "Manufacturer Name_t",
+            "Manufacturer Part Number_t",
+            "Ordering Process_t",
+            "PSC Description_t",
+            "To Zip Code_t",
+            "awardIdIdv",
+            "unitsOrdered",
+            "vendor",
+            null
+          ],
+          "highlight": [],
+          "sortable": false,
+          "header": true,
+          "paging": true,
+          "field_list": true,
+          "trimFactor": 300,
+          "normTimes": true,
+          "spyable": true,
+          "saveOption": "json",
+          "exportSize": 500,
+          "exportAll": true,
+          "displayLinkIcon": true,
+          "imageFields": [],
+          "imgFieldWidth": "auto",
+          "imgFieldHeight": "85px",
+          "title": "Table panel",
+          "important_fields": [
+            "Bureau_t",
+            "Contract Number_t",
+            "Duns Number_t",
+            "Extended Price_t",
+            "From Zip Code_t",
+            "Manufacturer Name_t",
+            "Manufacturer Part Number_t",
+            "Ordering Process_t",
+            "PSC Description_t",
+            "Product Description_t",
+            "Quantity_t",
+            "To Zip Code_t",
+            "Unit of Issue_t",
+            "Unspsc Code_t",
+            "_version_",
+            "awardIdIdv",
+            "contractingAgency",
+            "dataSource_t",
+            "id",
+            "longDescription",
+            "orderDate",
+            "productDescription",
+            "psc",
+            "text",
+            "unitPrice",
+            "unitsOrdered",
+            "vendor"
+          ],
+          "show_queries": true
+        }
+      ]
+    }
+  ],
+  "editable": true,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "_all"
+  },
+  "style": "light",
+  "failover": false,
+  "panel_hints": true,
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": true,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": true,
+    "hide": false,
+    "dropdown_collections": false
+  },
+  "solr": {
+     "server": "http://96.127.49.17:8983/solr/",
+    "core_name": "p3data_shard1_replica1",
+
+    "core_list": [
+      "p3data_signals_aggr",
+      "p3data_logs",
+      "audit_logs",
+      "hallways_logs",
+      "system_metrics",
+      "system_blobs",
+      "p3data",
+      "p3data_signals",
+      "hallways",
+      "hallways_signals",
+      "hallways_signals_aggr",
+      "logs",
+      "system_banana"
+    ],
+    "global_params": ""
+  }
+}

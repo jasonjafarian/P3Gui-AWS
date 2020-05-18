@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<project name="Banana Project" basedir="." default="war">
+
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="name" value="p3"/> <!--use gui in place of p3 in bsp environment -->
+    <property name="lib" value="java-lib"/>
+    <property name="exlib" value="java-lib"/>
+    <property name="java.src" value="java-src"/>
+    <property name="war.file" value="${build.dir}/${name}.war"/>
+    <property name="json.dir" value="${src.dir}/banana/app/dashboards"/>
+    <property name="deploy.to" value="dev"/> <!-- use test if not already set in ant -Ddeploy.to=xxxx, xxxx can be test or prod -->
+    <!--use bsp in place of dev in bsp environment -->
+    <buildnumber/>
+
+    <path id="class.path">
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${exlib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="prepare">
+        <tstamp/>
+        <!--  Create the build directory used by compile   -->
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target depends="clean, prepare" name="compile">
+        <!--  Compile the java code from ${src} into ${build}   -->
+        <javac   debug="true" destdir="${build.dir}" srcdir="${java.src}">
+            <classpath refid="class.path" />
+        </javac>
+    </target>
+
+    <target depends="compile" name="war">
+        <echo message="prepare ${war.file} for ${deploy.to}"/>
+        <war destfile="${war.file}" webxml="${src.dir}/WEB-INF/${deploy.to}.web.xml">
+            <classes dir="${build.dir}">
+                <include name="**/*.class"/>
+            </classes>
+
+            <lib dir="${lib}">
+                <include name="*.jar"/> <!-- don't recurse -->
+                <exclude name="javax.servlet.jar,javax.servlet-3.0.1.jar"/>
+            </lib>
+
+            <zipfileset dir="${src.dir}">
+                <!--<include name="**/**"/>-->
+                <include name="**/*"/>
+                <exclude name="**/*web.xml"/>
+            </zipfileset>
+        </war>
+    </target>
+
+    <target name="copy-json">
+        <fail message="deploy-to property is not set, Call ant with -Ddeploy-to=dev, test or prod">
+            <condition>
+                <not>
+                    <isset property="deploy-to"/>
+                </not>
+            </condition>
+        </fail>
+        <echo message="Copy ${deploy-to}'s jsons to dashboard directory"/>
+        <copy todir="${json.dir}" overwrite="true">
+            <fileset dir="${json.dir}/${deploy-to}">
+                <include name="**/*.json" />
+            </fileset>
+        </copy>
+    </target>
+
+</project>

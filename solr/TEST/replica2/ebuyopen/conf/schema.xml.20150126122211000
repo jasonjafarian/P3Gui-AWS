@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="example" version="1.5">
+
+   <field name="_version_" type="long" indexed="true" stored="true"/>
+	<uniqueKey>id</uniqueKey>
+   <field name="_root_" type="string" indexed="true" stored="false"/>
+
+
+	<field name="id" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="OID" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="BatchNumber" type="long" indexed="true" stored="true" multiValued="false" />
+	<field name="BuyerAgency" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="BuyerEmail" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="BuyerName" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="Attachment400" type="string" indexed="true" stored="true" multiValued="true" />
+	<field name="CloseDate" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="CloseDateUTC" type="tdate" indexed="true" stored="true" multiValued="false" />
+    <field name="Description" type="text_en" indexed="true" stored="true" multiValued="false" termVectors="true" omitPositions="false" omitTermFreqAndPositions="false" />
+    <field name="DocType" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="DocumentName" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="DocumentPath" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="IssueDate" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="IssueDateUTC" type="tdate" indexed="true" stored="true" multiValued="false" />
+
+
+    <field name="LineItem" type="text_en" indexed="true" stored="true" multiValued="true" />
+    <field name="RFQId" type="string" indexed="true" stored="true" multiValued="false" /> 
+
+    <field name="StateLocal" type="int" indexed="true" stored="true" multiValued="false" />
+    <field name="AttachmentCount" type="int" indexed="true" stored="true" multiValued="false" />
+    <field name="Title" type="text_en" indexed="true" stored="true" multiValued="false" termVectors="true" omitPositions="false" omitTermFreqAndPositions="false" />
+
+    <field name="CSIN" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="CSINs" type="string" indexed="true" stored="true" multiValued="true" />
+
+    <field name="Categories" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="Category" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <field name="Sources" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="Source" type="string" indexed="true" stored="true" multiValued="false" />   
+
+	<field name="SINs" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="SIN" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <field name="Schedules" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="Schedule" type="string" indexed="true" stored="true" multiValued="false" />
+
+	<dynamicField name="Attachment*" type="string" />
+	<dynamicField name="*_l" type="string" indexed="true" stored="true" multiValued="true" />
+	<dynamicField name="*" type="string" indexed="true" stored="true" multiValued="false" />
+
+	
+	
+	
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+
+    <!-- boolean type: "true" or "false" -->
+    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+    <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
+    <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
+    <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+    <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
+
+    <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" positionIncrementGap="0"/>
+    <fieldType name="tfloat" class="solr.TrieFloatField" precisionStep="8" positionIncrementGap="0"/>
+    <fieldType name="tlong" class="solr.TrieLongField" precisionStep="8" positionIncrementGap="0"/>
+    <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0"/>
+
+
+    <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
+
+    <!-- A Trie based date field for faster date range queries and date faceting. -->
+    <fieldType name="tdate" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0"/>
+
+
+    <!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->
+    <fieldtype name="binary" class="solr.BinaryField"/>
+
+    <fieldType name="random" class="solr.RandomSortField" indexed="true" />
+
+    <!-- A text field with defaults appropriate for English: it
+         tokenizes with StandardTokenizer, removes English stop words
+         (lang/stopwords_en.txt), down cases, protects words from protwords.txt, and
+         finally applies Porter's stemming.  The query time analyzer
+         also applies synonyms from synonyms.txt. -->
+    <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <!-- in this example, we will only use synonyms at query time
+        <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
+        -->
+        <!-- Case insensitive stop word removal.
+        -->
+        <filter class="solr.StopFilterFactory"
+                ignoreCase="true"
+                words="lang/stopwords_en.txt"
+                />
+        <filter class="solr.LowerCaseFilterFactory"/>
+	<filter class="solr.EnglishPossessiveFilterFactory"/>
+        <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+	<!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
+        <filter class="solr.EnglishMinimalStemFilterFactory"/>
+	-->
+        <filter class="solr.PorterStemFilterFactory"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+        <filter class="solr.StopFilterFactory"
+                ignoreCase="true"
+                words="lang/stopwords_en.txt"
+                />
+        <filter class="solr.LowerCaseFilterFactory"/>
+	<filter class="solr.EnglishPossessiveFilterFactory"/>
+        <filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>
+	<!-- Optionally you may want to use this less aggressive stemmer instead of PorterStemFilterFactory:
+        <filter class="solr.EnglishMinimalStemFilterFactory"/>
+	-->
+        <filter class="solr.PorterStemFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+
+
+    <fieldType name="point" class="solr.PointType" dimension="2" subFieldSuffix="_d"/>
+
+    <!-- A specialized field for geospatial search. If indexed, this fieldType must not be multivalued. -->
+    <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
+
+    <!-- An alternative geospatial field type new to Solr 4.  It supports multiValued and polygon shapes.
+      For more information about this and other Spatial fields new to Solr 4, see:
+      http://wiki.apache.org/solr/SolrAdaptersForLuceneSpatial4
+    -->
+    <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType"
+        geo="true" distErrPct="0.025" maxDistErr="0.000009" units="degrees" />
+    <fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />
+             
+
+
+</schema>
